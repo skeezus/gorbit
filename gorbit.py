@@ -4,6 +4,7 @@ from models import human
 
 BASE_DIR = os.path.abspath('')
 TREX_PATH = 'assets/1x/trex100.png'
+BOMB_PATH = 'assets/1x/bomb50.png'
 
 def start():
     pygame.init()
@@ -15,9 +16,15 @@ def start():
     trex_rect = trex.get_rect()
     trex_rect.center = (width/2, height/2)
 
+    bomb = pygame.image.load(os.path.join(BASE_DIR, BOMB_PATH))
+    bomb_rect = bomb.get_rect()
+    bomb_rect.center = (25, height/2)
+    
+
     black = 0,0,0
 
-    speed = [0, 1]
+    trex_speed = [0, 1]
+    bomb_speed = [1, 0]
 
     running = True
     init = True
@@ -25,6 +32,7 @@ def start():
     def reload():
         screen.fill(black)
         screen.blit(trex, trex_rect)
+        screen.blit(bomb, bomb_rect)
         pygame.display.flip()
 
     while running: # main loop
@@ -34,16 +42,20 @@ def start():
                 running = False # change the value to False, to exit the main loop
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    speed[1] = -speed[1]
+                    trex_speed[1] = -trex_speed[1]
                     for _ in range(75):
                         pygame.event.pump() #https://stackoverflow.com/questions/44254458/pygame-needs-for-event-in-pygame-event-get-in-order-not-to-crash
-                        trex_rect = trex_rect.move(speed)
+                        trex_rect = trex_rect.move(trex_speed)
                         reload()
-                    speed[1] = -speed[1]
+                    trex_speed[1] = -trex_speed[1]
                     for _ in range(75):
                         pygame.event.pump()
-                        trex_rect = trex_rect.move(speed)
+                        trex_rect = trex_rect.move(trex_speed)
                         reload()
+
+        bomb_rect = bomb_rect.move(bomb_speed)
+        reload()
+
         if init:
             reload()
             init = False
