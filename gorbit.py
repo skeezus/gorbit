@@ -1,11 +1,8 @@
 import os, sys, pygame
 
-from models import human
+from sprites.enemy import Enemy
+from sprites.hero import Hero
 
-BASE_DIR = os.path.abspath('')
-TREX_PATH = 'assets/1x/trex100.png'
-BOMB_PATH = 'assets/1x/bomb50.png'
-BOMB_PATH2 = 'assets/1x/bomb50.png'
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
@@ -17,22 +14,11 @@ def start():
     clock = pygame.time.Clock()
 
     size = width, height = (SCREEN_WIDTH, SCREEN_HEIGHT)
+    screen_color = 0,0,0
     screen = pygame.display.set_mode(size)
 
-    trex = pygame.image.load(os.path.join(BASE_DIR, TREX_PATH)) # use os.path.join to load files from subdirectories for portability
-    trex_rect = trex.get_rect()
-    trex_rect.center = (width/2, height/1.5)
-
-    bomb = pygame.image.load(os.path.join(BASE_DIR, BOMB_PATH))
-    bomb_rect = bomb.get_rect()
-    bomb_rect.center = (25, height/1.5)
-    
-    braden = 'braden'
-
-    black = 0,0,0
-
-    trex_speed = [0, 2]
-    bomb_speed = [3, 0]
+    enemy = Enemy(screen.get_size())
+    hero = Hero(screen.get_size())
 
     is_jumping = False
     jump_count = 10
@@ -40,18 +26,19 @@ def start():
     running = True
 
     def redrawGameWindow():
-        screen.fill(black)
-        screen.blit(trex, trex_rect) # @blit: block transfer - allows you to copy the contents of one surface to another
-        screen.blit(bomb, bomb_rect)
+        screen.fill(screen_color)
+        screen.blit(hero.surface, hero.rect) # @blit: block transfer - allows you to copy the contents of one surface to another
+        screen.blit(enemy.surface, enemy.rect)
         pygame.display.flip() # updates the screen with everything that's been drawn since the last flip
 
     def jump():
-        nonlocal trex_rect # https://stackoverflow.com/questions/5218895/python-nested-functions-variable-scoping
+        #nonlocal trex_rect # https://stackoverflow.com/questions/5218895/python-nested-functions-variable-scoping
         #nonlocal trex_rect
         #trex_speed[1] = -trex_speed[1]
-        trex_rect = trex_rect.move(trex_speed)
+        #trex_rect = trex_rect.move(trex_speed)
         #braden = braden + 'a'
         #print(braden)
+        pass
 
     while running: # main loop
         #pygame.time.delay(100)
@@ -67,26 +54,24 @@ def start():
                     #trex_rect = trex_rect.move(trex_speed)
                     is_jumping = True
                     #jump()
-        #trex_speed[1] = -trex_speed[1]
-        #trex_rect = trex_rect.move(trex_speed)
+                    #trex_speed[1] = -trex_speed[1]
+                    #trex_rect = trex_rect.move(trex_speed)
                     #trex_speed[1] = -trex_speed[1]
         if is_jumping: # jump is like a parabola (moving faster at beginning - hangtime at top - then gain speed as you move down)
             if jump_count >= -10:
                 neg = -1
                 if jump_count < 0:
                     neg = 1 # move character back down
-                trex_speed[1] = (jump_count ** 2) * 0.75 * neg
+                hero.speed[1] = (jump_count ** 2) * 0.75 * neg
                 jump_count -= 1
 
-                print(trex_speed)
-
-                trex_rect = trex_rect.move(trex_speed)
+                hero.move()
             else:
                 is_jumping = False
                 jump_count = 10
 
 
-        bomb_rect = bomb_rect.move(bomb_speed)
+        enemy.move()
         redrawGameWindow()
 
 
