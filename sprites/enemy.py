@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, screen_dims):
         self.surface = pygame.image.load(os.path.join(BASE_DIR, IMAGE_PATH))
         self.rect = self.surface.get_rect(center=(25, screen_dims[1] / 1.5))
-        self.speed = [3, 0]
+        self.speed = [4, 0]
 
     def move(self):
         self.rect = self.rect.move(self.speed)

@@ -1,4 +1,6 @@
-import os, sys, pygame
+import json, os, sys, threading
+import urllib.request as urllib
+import pygame
 
 from sprites.enemy import Enemy
 from sprites.hero import Hero
@@ -6,6 +8,16 @@ from sprites.hero import Hero
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
+
+def authenticate():
+    url = 'http://127.0.0.1:8082/'
+    req = urllib.Request(url=url)
+
+    resp = urllib.urlopen(req).read()
+
+    resp_decoded = resp.decode('utf8')
+    print(resp_decoded)
+    #print(json.loads(resp_decoded))
 
 def start():
     pygame.init()
@@ -42,8 +54,10 @@ def start():
 
     while running: # main loop
         #pygame.time.delay(100)
-        clock.tick(60)
+        clock.tick(45)
         #print(clock.get_fps())
+        #authenticate()
+        #threading.Thread(target=authenticate, args=()).start()
         
         for event in pygame.event.get(): # event handling, gets all event from the event queue
             if event.type == pygame.QUIT: # only do something if the event is of type QUIT
